@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quiz 1 - Le Closing des Produits Digitaux</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #172554, #1e3a8a);
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        /* HEADER */
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #2563eb;
+            padding: 7px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 15px;
+        }
+
+        /* PROGRESSION */
+
+        .progress-area {
+            margin-bottom: 25px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 9px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 10%;
+            background: #3b82f6;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        /* QUESTION */
+
+        .question-number {
+            color: #60a5fa;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            font-size: 23px;
+            line-height: 1.4;
+            margin-bottom: 25px;
+        }
+
+        /* OPTIONS */
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .option {
+            width: 100%;
+            border: 2px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: white;
+            padding: 17px 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 16px;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .option:hover {
+            background: rgba(59, 130, 246, 0.18);
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .letter {
+            min-width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+        }
+
+        .option.correct .letter {
+            background: #22c55e;
+        }
+
+        .option.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+
+        .option.wrong .letter {
+            background: #ef4444;
+        }
+
+        .option.disabled {
+            cursor: default;
+        }
+
+        .option.disabled:hover {
+            transform: none;
+        }
+
+        /* EXPLICATION */
+
+        .explanation {
+            display: none;
+            margin-top: 20px;
+            padding: 17px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.08);
+            border-left: 4px solid #3b82f6;
+            color: #e2e8f0;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .explanation strong {
+            color: white;
+        }
+
+        /* BOUTON */
+
+        .next-btn {
+            width: 100%;
+            margin-top: 22px;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            transition: 0.25s;
+        }
+
+        .next-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        /* RESULTAT */
+
+        .result {
+            display: none;
+            text-align: center;
+        }
+
+        .result-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(34,197,94,0.15);
+            border: 2px solid #22c55e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 42px;
+        }
+
+        .result h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .score {
+            font-size: 55px;
+            font-weight: bold;
+            color: #60a5fa;
+            margin: 15px 0;
+        }
+
+        .result-message {
+            color: #cbd5e1;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .restart-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* QUESTIONS RATEES */
+
+        .mistakes {
+            margin-top: 35px;
+            text-align: left;
+        }
+
+        .mistakes h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .mistake {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .mistake-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .your-answer {
+            color: #f87171;
+            margin-bottom: 6px;
+        }
+
+        .correct-answer {
+            color: #4ade80;
+            margin-bottom: 10px;
+        }
+
+        .mistake-explanation {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .perfect {
+            background: rgba(34,197,94,0.08);
+            border: 1px solid rgba(34,197,94,0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            line-height: 1.6;
+        }
+
+        /* ANIMATION */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-box {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .quiz-container {
+                padding: 20px;
+                border-radius: 18px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .question {
+                font-size: 20px;
+            }
+
+            .option {
+                font-size: 15px;
+                padding: 15px;
+            }
+
+            .score {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz-container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="badge">QUIZ 1</div>
+
+        <h1>Les fondamentaux du Closing</h1>
+
+        <p>
+            Testez vos connaissances après la lecture du document.
+        </p>
+    </div>
+
+    <!-- ZONE DU QUIZ -->
+    <div id="quiz">
+
+        <!-- PROGRESSION -->
+        <div class="progress-area">
+
+            <div class="progress-info">
+                <span id="progressText">Question 1 sur 10</span>
+                <span id="scoreText">Score : 0</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+        </div>
+
+        <!-- QUESTION -->
+        <div class="question-box">
+
+            <div class="question-number" id="questionNumber">
+                QUESTION 1
+            </div>
+
+            <div class="question" id="questionText"></div>
+
+            <div class="options" id="optionsContainer"></div>
+
+            <div class="explanation" id="explanation"></div>
+
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+                Question suivante →
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULTAT -->
+    <div class="result" id="result">
+
+        <div class="result-icon">
+            ✓
+        </div>
+
+        <h2>Quiz terminé !</h2>
+
+        <div class="score" id="finalScore">
+            0/10
+        </div>
+
+        <p class="result-message" id="resultMessage"></p>
+
+        <div id="mistakesContainer"></div>
+
+        <button class="restart-btn" onclick="restartQuiz()">
+            Recommencer le quiz
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       QUESTIONS DU QUIZ 1
+       Basées sur le document "Le Closing des Produits
+       Digitaux - Édition Afrique"
+    ===================================================== */
+
+    const questions = [
+
+        {
+            question: "Selon le document, qu'est-ce qu'un prospect achète d'abord en Afrique ?",
+
+            options: [
+                "Le prix du produit",
+                "La personne qui lui vend",
+                "La technologie utilisée"
+            ],
+
+            correct: 1,
+
+            explanation:
+                "Le document explique qu'en Afrique, les prospects achètent d'abord une personne avant d'acheter un produit. La confiance et la relation humaine sont donc essentielles."
+        },
+
+        {
+            question: "Quel est l'objectif principal du closing selon le document ?",
+
+            options: [
+                "Forcer le prospect à acheter rapidement",
+                "Aider une personne intéressée à passer à l'action en levant ses doutes",
+                "Réduire systématiquement le prix du produit"
+            ],
+
+            correct: 1,
+
+            explanation:
+                "Le closing n'est pas présenté comme une pression exercée sur le prospect. Il consiste à aider une personne intéressée à agir en supprimant ses doutes et ses blocages."
+        },
+
+        {
+            question: "Quel appareil est présenté comme étant le principal outil utilisé par les prospects africains ?",
+
+            options: [
+                "Le smartphone",
+                "L'ordinateur de bureau",
+                "La tablette"
+            ],
+
+            correct: 0,
+
+            explanation:
+                "Le document indique que le mobile est roi. Les prospects utilisent principalement leur smartphone, parfois avec une connexion instable ou des données limitées."
+        },
+
+        {
+            question: "Pourquoi le document recommande-t-il de garder les pages, vidéos et fichiers légers ?",
+
+            options: [
+                "Parce que les ordinateurs sont interdits",
+                "Parce que les connexions peuvent être instables et les données mobiles limitées",
+                "Parce que les vidéos ne servent pas à vendre"
+            ],
+
+            correct: 1,
+
+            explanation:
+                "Le document insiste sur les réalités du marché africain : connexion parfois instable et données mobiles limitées. Les contenus doivent donc être adaptés à ces contraintes."
+        },
+
+        {
+            question: "Que faut-il principalement vendre au prospect plutôt que de simplement présenter ?",
+
+            options: [
+                "La transformation et le résultat concret",
+                "Le plus grand nombre possible de fonctionnalités",
+                "Uniquement le prix promotionnel"
+            ],
+
+            correct: 0,
+
+            explanation:
+                "Le document recommande de vendre une transformation plutôt que le produit lui-même. Le prospect doit comprendre le résultat concret qu'il peut obtenir."
+        },
+
+        {
+            question: "Quel type d'urgence est recommandé pour faciliter une décision d'achat ?",
+
+            options: [
+                "Une fausse promotion avec un compte à rebours",
+                "Une urgence réelle et vérifiable",
+                "Une menace de supprimer immédiatement le produit"
+            ],
+
+            correct: 1,
+
+            explanation:
+                "Le document recommande une urgence honnête : par exemple la fin réelle d'un bonus, une hausse de prix à une date précise ou le début d'une nouvelle cohorte."
+        },
+
+        {
+            question: "Dans une conversation de closing, quelle attitude d'écoute est recommandée ?",
+
+            options: [
+                "Le closer doit parler presque tout le temps",
+                "Le prospect doit avoir une grande place pour parler",
+                "Le closer doit éviter les questions"
+            ],
+
+            correct: 1,
+
+            explanation:
+                "Le document précise que si un closer parle 80 % du temps, il a probablement perdu la vente. Il faut écouter le prospect et poser des questions sur sa situation et son problème."
+        },
+
+        {
+            question: "Pourquoi faut-il qualifier un prospect avant de consacrer beaucoup de temps au closing ?",
+
+            options: [
+                "Pour éviter de perdre du temps avec une personne qui n'est pas encore prête",
+                "Pour faire peur au prospect",
+                "Pour augmenter automatiquement le prix"
+            ],
+
+            correct: 0,
+
+            explanation:
+                "La qualification permet notamment de vérifier qu'il existe un besoin clair et actuel ainsi qu'une capacité à payer au moins la première échéance. Si la personne n'est pas prête, elle peut être nourrie avec du contenu gratuit."
+        },
+
+        {
+            question: "Quel exemple de preuve sociale est particulièrement adapté au contexte présenté dans le document ?",
+
+            options: [
+                "Une capture d'écran WhatsApp d'un client satisfait",
+                "Un logo sans aucune information",
+                "Une publicité télévisée sans témoignage"
+            ],
+
+            correct: 0,
+
+            explanation:
+                "Le document recommande de préparer des preuves sociales concrètes, notamment des témoignages et des captures d'écran de clients satisfaits."
+        },
+
+        {
+            question: "Quelle question peut être utilisée directement pour conclure une vente ?",
+
+            options: [
+                "Vous voulez encore que je parle du produit ?",
+                "D'après ce que vous m'avez dit, le produit correspond à ce que vous cherchez. On démarre ensemble cette semaine ?",
+                "Vous connaissez déjà le nom du produit ?"
+            ],
+
+            correct: 1,
+
+            explanation:
+                "Le document donne une formulation directe : « D'après ce que vous m'avez dit, [nom du produit] correspond exactement à ce que vous cherchez. On démarre ensemble cette semaine ? » Après la question, il recommande de rester silencieux."
+        }
+
+    ];
+
+
+    /* =====================================================
+       VARIABLES
+    ===================================================== */
+
+    let currentQuestion = 0;
+
+    let score = 0;
+
+    let selectedAnswers = [];
+
+    let answered = false;
+
+
+    /* =====================================================
+       ELEMENTS HTML
+    ===================================================== */
+
+    const questionText =
+        document.getElementById("questionText");
+
+    const questionNumber =
+        document.getElementById("questionNumber");
+
+    const optionsContainer =
+        document.getElementById("optionsContainer");
+
+    const explanation =
+        document.getElementById("explanation");
+
+    const nextBtn =
+        document.getElementById("nextBtn");
+
+    const progressText =
+        document.getElementById("progressText");
+
+    const progressFill =
+        document.getElementById("progressFill");
+
+    const scoreText =
+        document.getElementById("scoreText");
+
+    const quiz =
+        document.getElementById("quiz");
+
+    const result =
+        document.getElementById("result");
+
+    const finalScore =
+        document.getElementById("finalScore");
+
+    const resultMessage =
+        document.getElementById("resultMessage");
+
+    const mistakesContainer =
+        document.getElementById("mistakesContainer");
+
+
+    /* =====================================================
+       AFFICHER UNE QUESTION
+    ===================================================== */
+
+    function loadQuestion() {
+
+        answered = false;
+
+        explanation.classList.remove("show");
+
+        nextBtn.style.display = "none";
+
+        const q = questions[currentQuestion];
+
+        questionNumber.textContent =
+            "QUESTION " + (currentQuestion + 1);
+
+        questionText.textContent =
+            q.question;
+
+        progressText.textContent =
+            "Question " + (currentQuestion + 1) + " sur " + questions.length;
+
+        scoreText.textContent =
+            "Score : " + score;
+
+        const progress =
+            ((currentQuestion + 1) / questions.length) * 100;
+
+        progressFill.style.width =
+            progress + "%";
+
+        optionsContainer.innerHTML = "";
+
+        q.options.forEach((option, index) => {
+
+            const button =
+                document.createElement("button");
+
+            button.className = "option";
+
+            button.innerHTML = `
+                <span class="letter">
+                    ${String.fromCharCode(65 + index)}
+                </span>
+
+                <span>
+                    ${option}
+                </span>
+            `;
+
+            button.onclick = () =>
+                selectAnswer(index, button);
+
+            optionsContainer.appendChild(button);
+
+        });
+    }
+
+
+    /* =====================================================
+       REPONSE
+    ===================================================== */
+
+    function selectAnswer(selectedIndex, selectedButton) {
+
+        if (answered) return;
+
+        answered = true;
+
+        const q = questions[currentQuestion];
+
+        const allButtons =
+            document.querySelectorAll(".option");
+
+        const isCorrect =
+            selectedIndex === q.correct;
+
+
+        /* ENREGISTRER LA REPONSE */
+
+        selectedAnswers[currentQuestion] = {
+            selected: selectedIndex,
+            correct: q.correct,
+            isCorrect: isCorrect
+        };
+
+
+        /* SI BONNE REPONSE */
+
+        if (isCorrect) {
+
+            score++;
+
+            selectedButton.classList.add("correct");
+
+            explanation.innerHTML = `
+                <strong>Bonne réponse !</strong><br>
+                ${q.explanation}
+            `;
+
+        }
+
+
+        /* SI MAUVAISE REPONSE */
+
+        else {
+
+            selectedButton.classList.add("wrong");
+
+            allButtons[q.correct].classList.add("correct");
+
+            explanation.innerHTML = `
+                <strong>Pas tout à fait.</strong><br>
+                ${q.explanation}
+            `;
+
+        }
+
+
+        /* DESACTIVER LES REPONSES */
+
+        allButtons.forEach(button => {
+
+            button.classList.add("disabled");
+
+            button.onclick = null;
+
+        });
+
+
+        explanation.classList.add("show");
+
+        scoreText.textContent =
+            "Score : " + score;
+
+        nextBtn.style.display =
+            "block";
+
+
+        /* TEXTE DU BOUTON */
+
+        if (currentQuestion === questions.length - 1) {
+
+            nextBtn.textContent =
+                "Voir mon résultat";
+
+        } else {
+
+            nextBtn.textContent =
+                "Question suivante →";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       QUESTION SUIVANTE
+    ===================================================== */
+
+    function nextQuestion() {
+
+        if (currentQuestion < questions.length - 1) {
+
+            currentQuestion++;
+
+            loadQuestion();
+
+        } else {
+
+            showResult();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RESULTAT
+    ===================================================== */
+
+    function showResult() {
+
+        quiz.style.display = "none";
+
+        result.style.display = "block";
+
+        finalScore.textContent =
+            score + "/" + questions.length;
+
+
+        /* MESSAGE SELON LE SCORE */
+
+        if (score === 10) {
+
+            resultMessage.textContent =
+                "Excellent ! Vous maîtrisez très bien les fondamentaux du closing.";
+
+        } else if (score >= 8) {
+
+            resultMessage.textContent =
+                "Très bon résultat ! Quelques notions sont encore à revoir.";
+
+        } else if (score >= 5) {
+
+            resultMessage.textContent =
+                "Bon début. Relisez les notions correspondant aux questions ratées.";
+
+        } else {
+
+            resultMessage.textContent =
+                "Continuez à apprendre. Relisez le document puis refaites le quiz.";
+
+        }
+
+
+        /* QUESTIONS RATEES */
+
+        const mistakes =
+            selectedAnswers
+                .map((answer, index) => {
+
+                    if (!answer.isCorrect) {
+
+                        return {
+                            index: index,
+                            answer: answer
+                        };
+
+                    }
+
+                    return null;
+
+                })
+                .filter(item => item !== null);
+
+
+        if (mistakes.length === 0) {
+
+            mistakesContainer.innerHTML = `
+                <div class="perfect">
+                    <strong>Parfait ! 🎉</strong><br><br>
+                    Vous avez répondu correctement aux 10 questions.
+                    Aucune notion n'est à revoir dans ce quiz.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        let html = `
+
+            <div class="mistakes">
+
+                <h3>
+                    📚 Questions à revoir
+                </h3>
+
+        `;
+
+
+        mistakes.forEach(item => {
+
+            const q =
+                questions[item.index];
+
+            const selected =
+                q.options[item.answer.selected];
+
+            const correct =
+                q.options[q.correct];
+
+
+            html += `
+
+                <div class="mistake">
+
+                    <div class="mistake-question">
+                        ${item.index + 1}. ${q.question}
+                    </div>
+
+                    <div class="your-answer">
+                        ✕ Votre réponse :
+                        ${selected}
+                    </div>
+
+                    <div class="correct-answer">
+                        ✓ Bonne réponse :
+                        ${correct}
+                    </div>
+
+                    <div class="mistake-explanation">
+                        ${q.explanation}
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+
+        html += `</div>`;
+
+        mistakesContainer.innerHTML =
+            html;
+
+    }
+
+
+    /* =====================================================
+       RECOMMENCER
+    ===================================================== */
+
+    function restartQuiz() {
+
+        currentQuestion = 0;
+
+        score = 0;
+
+        selectedAnswers = [];
+
+        result.style.display = "none";
+
+        quiz.style.display = "block";
+
+        loadQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* =====================================================
+       DEMARRAGE
+    ===================================================== */
+
+    loadQuestion();
+
+</script>
+
+</body>
+</html>
